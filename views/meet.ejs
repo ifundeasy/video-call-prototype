@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Video Call</title>
+  <link rel="stylesheet" href="/libs/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/libs/bootswatch/dist/united/bootstrap.min.css" />
+  <link rel="stylesheet" href="/libs/bootstrap-icons/font/bootstrap-icons.css" />
+  <link rel="stylesheet" href="/styles/meet.css" />
+</head>
+
+<body class="d-flex flex-column h-100 w-100">
+  <!-- modals -->
+  <div class="modal fade" id="chatModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="chatModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen-lg-down modal-dialog-scrollable"">
+      <div class=" modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Chats</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body align-items-end">
+        <div class="chat-bubble-container">
+          <div class="row">
+            <div class="float-start">
+              <p class="float-start bg-gradient chat-bubble-text">
+                <span class="sender">
+                  <span class="text-info">Ababil</span>
+                  <span>:</span>
+                </span>
+                <span>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been
+                  the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type
+                  and scrambled it to make a type specimen boo</span>
+              </p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="float-end">
+              <p class="float-end bg-gradient chat-bubble-text">
+                <span>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been
+                  the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type
+                  and scrambled it to make a type specimen boo</span>
+              </p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="float-start">
+              <p class="float-start bg-gradient chat-bubble-text">
+                <span class="sender">
+                  <span class="text-info">Ababil</span>
+                  <span>:</span>
+                </span>
+                <span>Yes we did!</span>
+              </p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="float-end">
+              <p class="float-end bg-gradient chat-bubble-text">
+                <span>No problem bro :)</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="input-group mb-3">
+          <div class="input-group-text" id="btnGroupAddon"><i class="bi bi-pencil"></i></div>
+          <input type="text" class="form-control" aria-label="Text input with segmented dropdown button">
+          <button type="button" class="btn btn-primary">
+            <!-- <span>Send</span> -->
+            <div style="transform: rotate(46deg); float: right">
+              <i class="bi bi-send"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- content -->
+  <main class="flex-shrink-0 h-100">
+    <div class="container h-100">
+      <div class="vlayer-0 row h-100 justify-content-center">
+        <div class="vlayer-1 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+          <div class="vlayer-2 row h-100">
+            <div class="vlayer-3 col w-100">
+              <div class="vlayer-4 w-100">video/avatar here</div>
+            </div>
+          </div>
+        </div>
+        <div class="vlayer-1 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+          <div class="vlayer-2 row h-100">
+            <div class="vlayer-3 col w-100">
+              <div class="vlayer-4 w-100">video/avatar here</div>
+            </div>
+          </div>
+        </div>
+        <div class="vlayer-1 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+          <div class="vlayer-2 row h-100">
+            <div class="vlayer-3 col w-100">
+              <div class="vlayer-4 w-100">video/avatar here</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- static absolute footer -->
+  <footer class="footer mt-auto py-3 bg-light">
+    <div class="container text-center">
+      <button type="button" class="btn btn-lg btn-info">
+        <i class="bi bi-camera-video"></i>
+      </button>
+      <button type="button" class="btn btn-lg btn-dark">
+        <i class="bi bi-person-circle"></i>
+      </button>
+      <button type="button" class="btn btn-lg btn-primary">
+        <i class="bi bi-camera-video-off"></i>
+      </button>
+      <button type="button" class="btn btn-lg btn-info">
+        <i class="bi bi-mic"></i>
+      </button>
+      <button type="button" class="btn btn-lg btn-primary">
+        <i class="bi bi-mic-mute"></i>
+      </button>
+      <button type="button" class="btn btn-lg btn-danger">
+        <i class="bi bi-telephone-x-fill"></i>
+      </button>
+      <button type="button" class="btn btn-lg btn-secondary" data-bs-toggle="modal" data-bs-target="#chatModal"
+        id="chat-toggle">
+        <i class="bi bi-chat-quote"></i>
+      </button>
+    </div>
+  </footer>
+
+
+  <script src="/libs/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="/libs/jquery/dist/jquery.min.js"></script>
+  <script src="/scripts/meet.js"></script>
+</body>
+
+</html>
