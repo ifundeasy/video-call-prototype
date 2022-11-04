@@ -5,19 +5,16 @@ body {
 
 body {
   display: flex;
-  /* align-items: center;
-  padding-top: 40px;
-  padding-bottom: 40px; */
   background-color: #f5f5f5;
 }
 
-#chatModal .modal-content {
+#mdl-chat .modal-content {
   height: auto;
   min-height: 100%;
 }
 
 @media screen and (min-width: 992px) {
-  #chatModal .modal-dialog {
+  #mdl-chat .modal-dialog {
     margin-right: 25px !important;
     margin-top: 25px !important;
     margin-bottom: 25px !important;
@@ -57,13 +54,70 @@ footer.footer button i {
 .vlayer-3 {
   border: 0px solid gray;
   padding: 10px 10px;
+  display: block;
+  position: relative;
 }
 
 .vlayer-4 {
-  border: 1px solid red;
+  border: 1px solid burlywood;
   border-radius: 5px;
   min-height: 200px;
   max-height: 310px;
+  background-color: black;
+}
+
+.vlayer-self {
+  /* display: none; */
+  position: absolute;
+  background-color: black;
+}
+
+.vlayer-preview {
+  border: 1px solid burlywood;
+  border-radius: 5px;
+  position: fixed;
+  bottom: 10%;
+  right: 5%;
+  height: 15%;
+  width: 15%;
+  z-index: 10;
+  background-color: black;
+}
+
+.participant-name {
+  position: absolute;
+  top: 11px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 10px;
+  border-top-left-radius: 3px;
+  text-shadow: 0px 0px 3px black;
+  color: white;
+}
+
+.vlayer-4 .participant-name {
+  text-shadow: none;
+  background-color: #c8c8c8eb;
+  color: navy;
+}
+
+video {
+  height: auto;
+  max-height: calc(100% - 11px);
+  margin-top: 5px;
+  width: 100%;
+  object-fit: cover;
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
+}
+
+@media (max-width: 700px) {
+  video {
+    height: auto;
+    width: 100%;
+  }
 }
 
 .chat-bubble-container {

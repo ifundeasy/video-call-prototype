@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Video Call</title>
+  <link rel="stylesheet" href="/libs/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/libs/bootswatch/dist/united/bootstrap.min.css" />
+  <link rel="stylesheet" href="/libs/bootstrap-icons/font/bootstrap-icons.css" />
+  <link rel="stylesheet" href="/styles/meet.css" />
+  <script>
+    window.NODE_ENV = "<%= NODE_ENV %>";
+    window.ROOM_ID = "<%= ROOM_ID %>";
+    window.RTC_URL = new URL("<%= RTC_URL %>");
+    window.SVC_URL = new URL("<%= SVC_URL %>");
+  </script>
+</head>
+
+<body class="d-flex flex-column h-100 w-100">
+  <!-- modals -->
+  <!-- <div class="modal fade" id="mdl-chat" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" -->
+  <div class="modal fade" id="mdl-chat" tabindex="-1" aria-labelledby="mdlChatLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen-lg-down modal-dialog-scrollable"">
+      <div class=" modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="mdlChatLabel">Chats</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body align-items-end">
+        <div class="chat-bubble-container">
+          <div class="row">
+            <div class="float-start">
+              <p class="float-start bg-gradient chat-bubble-text">
+                <span class="sender">
+                  <span class="text-info">Ababil</span>
+                  <span>:</span>
+                </span>
+                <span>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been
+                  the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type
+                  and scrambled it to make a type specimen boo</span>
+              </p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="float-end">
+              <p class="float-end bg-gradient chat-bubble-text">
+                <span>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been
+                  the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type
+                  and scrambled it to make a type specimen boo</span>
+              </p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="float-start">
+              <p class="float-start bg-gradient chat-bubble-text">
+                <span class="sender">
+                  <span class="text-info">Ababil</span>
+                  <span>:</span>
+                </span>
+                <span>Yes we did!</span>
+              </p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="float-end">
+              <p class="float-end bg-gradient chat-bubble-text">
+                <span>No problem bro :)</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="input-group mb-3">
+          <div class="input-group-text"><i class="bi bi-pencil"></i></div>
+          <input type="text" class="form-control" aria-label="Text input with segmented dropdown button" id="inp-msg">
+          <button type="button" class="btn btn-primary" id="btn-send-msg">
+            <!-- <span>Send</span> -->
+            <div style="transform: rotate(46deg); float: right">
+              <i class="bi bi-send"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- content -->
+  <main class="flex-shrink-0 h-100">
+    <div class="vlayer-self h-100 w-100">
+      <!-- <video></video> -->
+      <div class="participant-name">
+        <span>You</span>
+      </div>
+    </div>
+    <div class="container h-100">
+      <div id="cnt-participant" class="vlayer-0 row h-100 justify-content-center">
+        <div class="vlayer-1 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+          <div class="vlayer-2 row h-100">
+            <div class="vlayer-3 col w-100">
+              <div class="vlayer-4 w-100">
+                <!-- <video></video> -->
+                <div class="participant-name">
+                  <span>Participant 1</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="vlayer-1 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+          <div class="vlayer-2 row h-100">
+            <div class="vlayer-3 col w-100">
+              <div class="vlayer-4 w-100">
+                <!-- <video></video> -->
+                <div class="participant-name">
+                  <span>Participant 2</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="vlayer-1 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+          <div class="vlayer-2 row h-100">
+            <div class="vlayer-3 col w-100">
+              <div class="vlayer-4 w-100">
+                <!-- <video></video> -->
+                <div class="participant-name">
+                  <span>Participant 3</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="vlayer-1 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+          <div class="vlayer-2 row h-100">
+            <div class="vlayer-3 col w-100">
+              <div class="vlayer-4 w-100">
+                <!-- <video></video> -->
+                <div class="participant-name">
+                  <span>Participant 4</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vlayer-preview">
+      <!-- <video></video> -->
+      <div class="participant-name">
+        <span>You</span>
+      </div>
+    </div>
+  </main>
+
+
+  <!-- static absolute footer -->
+  <footer class="footer mt-auto py-3 bg-light">
+    <div class="container text-center">
+      <button type="button" class="btn btn-lg btn-info" id="btn-camera">
+        <i class="bi bi-camera-video"></i>
+      </button>
+      <button type="button" class="btn btn-lg btn-dark" id="btn-avatar">
+        <i class="bi bi-person-circle"></i>
+      </button>
+      <button type="button" class="btn btn-lg btn-primary" id="btn-camera-off">
+        <i class="bi bi-camera-video-off"></i>
+      </button>
+      <button type="button" class="btn btn-lg btn-info" id="btn-mic">
+        <i class="bi bi-mic"></i>
+      </button>
+      <button type="button" class="btn btn-lg btn-primary" id="btn-mic-off">
+        <i class="bi bi-mic-mute"></i>
+      </button>
+      <button type="button" class="btn btn-lg btn-danger" id="btn-call-end">
+        <i class="bi bi-telephone-x-fill"></i>
+      </button>
+      <button type="button" class="btn btn-lg btn-secondary" data-bs-toggle="modal" data-bs-target="#mdl-chat">
+        <i class="bi bi-chat-quote"></i>
+      </button>
+    </div>
+  </footer>
+
+  <script src="/libs/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="/libs/jquery/dist/jquery.min.js"></script>
+  <script src="/libs/peerjs/dist/peerjs.min.js"></script>
+  <script src="/libs/socket.io-client/dist/socket.io.min.js"></script>
+  <script src="/scripts/meet.js"></script>
+</body>
+
+</html>

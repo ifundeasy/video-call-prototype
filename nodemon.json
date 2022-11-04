@@ -1,0 +1,29 @@
+{
+  "restartable": "rs",
+  "ignore": [
+    ".git",
+    "node_modules/**/node_modules",
+    ".data",
+    "public",
+    "views",
+    "dist",
+    "test"
+  ],
+  "verbose": false,
+  "execMap": {
+    "js": "node --harmony"
+  },
+  "events": {
+    "restart": "echo Restarting.."
+  },
+  "watch": [
+    "src/",
+    "utils/",
+    "server.js",
+    "peer.js"
+  ],
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "ext": "js,html,css,ts"
+}
