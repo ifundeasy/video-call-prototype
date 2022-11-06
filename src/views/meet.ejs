@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Video Call</title>
   <link rel="stylesheet" href="/libs/bootstrap/dist/css/bootstrap.min.css" />
@@ -89,19 +89,23 @@
   <!-- content -->
   <main class="flex-shrink-0 h-100">
     <div class="vlayer-self h-100 w-100">
-      <!-- <video></video> -->
-      <div class="participant-name">
-        <span>You</span>
+      <div class="d-flex align-items-center justify-content-center h-100">
+        <div class="d-flex flex-column h-100 w-100" id="cnt-self">
+          <!-- <video></video> -->
+          <div class="other-name">
+            <span>You</span>
+          </div>
+        </div>
       </div>
     </div>
     <div class="container h-100">
-      <div id="cnt-participant" class="vlayer-0 row h-100 justify-content-center">
+      <div id="cnt-other" class="vlayer-0 row h-100 justify-content-center">
         <div class="vlayer-1 col-lg-4 col-md-4 col-sm-6 col-xs-12">
           <div class="vlayer-2 row h-100">
             <div class="vlayer-3 col w-100">
-              <div class="vlayer-4 w-100">
+              <div class="vlayer-4 d-flex align-items-center justify-content-center">
                 <!-- <video></video> -->
-                <div class="participant-name">
+                <div class="other-name">
                   <span>Participant 1</span>
                 </div>
               </div>
@@ -111,9 +115,9 @@
         <div class="vlayer-1 col-lg-4 col-md-4 col-sm-6 col-xs-12">
           <div class="vlayer-2 row h-100">
             <div class="vlayer-3 col w-100">
-              <div class="vlayer-4 w-100">
+              <div class="vlayer-4 d-flex align-items-center justify-content-center">
                 <!-- <video></video> -->
-                <div class="participant-name">
+                <div class="other-name">
                   <span>Participant 2</span>
                 </div>
               </div>
@@ -123,9 +127,9 @@
         <div class="vlayer-1 col-lg-4 col-md-4 col-sm-6 col-xs-12">
           <div class="vlayer-2 row h-100">
             <div class="vlayer-3 col w-100">
-              <div class="vlayer-4 w-100">
+              <div class="vlayer-4 d-flex align-items-center justify-content-center">
                 <!-- <video></video> -->
-                <div class="participant-name">
+                <div class="other-name">
                   <span>Participant 3</span>
                 </div>
               </div>
@@ -135,9 +139,9 @@
         <div class="vlayer-1 col-lg-4 col-md-4 col-sm-6 col-xs-12">
           <div class="vlayer-2 row h-100">
             <div class="vlayer-3 col w-100">
-              <div class="vlayer-4 w-100">
+              <div class="vlayer-4 d-flex align-items-center justify-content-center">
                 <!-- <video></video> -->
-                <div class="participant-name">
+                <div class="other-name">
                   <span>Participant 4</span>
                 </div>
               </div>
@@ -149,7 +153,7 @@
 
     <div class="vlayer-preview">
       <!-- <video></video> -->
-      <div class="participant-name">
+      <div class="other-name">
         <span>You</span>
       </div>
     </div>

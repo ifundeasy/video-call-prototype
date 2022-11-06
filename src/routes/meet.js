@@ -1,16 +1,20 @@
 const express = require('express')
 const { v4: uuidv4 } = require('uuid');
 
+const manager = require('../manager')
+
 const router = express.Router()
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   res.redirect(`/meet/${uuidv4()}`);
 });
 
-router.get('/:roomId', (req, res) => {
+router.get('/:roomId', async (req, res) => {
+  const { roomId } = req.params;
+
   res.render('meet', {
     NODE_ENV: process.env.NODE_ENV,
-    ROOM_ID: req.params.roomId,
+    ROOM_ID: roomId,
     RTC_URL: process.env.RTC_URL,
     SVC_URL: process.env.SVC_URL
   });

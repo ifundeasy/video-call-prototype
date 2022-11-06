@@ -25,7 +25,7 @@ footer.footer {
   position: fixed;
   bottom: 0;
   width: 100%;
-  background-color: #80808030 !important;
+  background-color: #00000000 !important;
 }
 
 footer.footer button {
@@ -84,9 +84,9 @@ footer.footer button i {
   background-color: black;
 }
 
-.participant-name {
+.other-name {
   position: absolute;
-  top: 11px;
+  margin-top: 11px;
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -96,21 +96,33 @@ footer.footer button i {
   color: white;
 }
 
-.vlayer-4 .participant-name {
+.vlayer-4 .other-name {
+  top: 11px;
+  left: 11px;
+  margin-top: 0px;
   text-shadow: none;
   background-color: #c8c8c8eb;
   color: navy;
 }
 
+.vlayer-preview .other-name {
+  top: -9px;
+}
+
 video {
-  height: auto;
-  max-height: calc(100% - 11px);
-  margin-top: 5px;
-  width: 100%;
+  /* max-height: calc(100% - 11px); */
+  /* margin-top: 5px; */
+  height: 100%;
   object-fit: cover;
+  width: 100%;
   transform: rotateY(180deg);
   -webkit-transform: rotateY(180deg);
   -moz-transform: rotateY(180deg);
+}
+.vlayer-self video {
+  width: 100vw;
+  height: 100vh;
+  object-fit: contain;
 }
 
 @media (max-width: 700px) {
