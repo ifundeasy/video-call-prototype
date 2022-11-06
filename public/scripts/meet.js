@@ -1,7 +1,6 @@
 // Loaded from process.env
 window.nodeEnv = window.NODE_ENV;
 window.roomId = window.ROOM_ID;
-window.rtcURL = window.RTC_URL;
 window.svcURL = window.SVC_URL;
 
 // Global variables
@@ -11,9 +10,8 @@ window.socket = undefined;
 window.peer = undefined;
 window.userId = undefined;
 window.userName = askName();
-window.reconnect = false;
+window.disconnected = false;
 window.room = undefined;
-window.initedPeer = false;
 
 function utf8_to_b64(str) {
   return window.btoa(unescape(encodeURIComponent(str)));
@@ -81,13 +79,15 @@ async function addVideoStream(usr, parent) {
 
   usr.el.addEventListener('loadedmetadata', () => {
     usr.el.play();
-    if (el.cntOther.attr('id') !== parent.attr('id')) {
+    if (el.cntSelfVideo.attr('id') === parent.attr('id')) {
+      parent.find('video').remove();
       return parent.prepend(usr.el)
     }
 
     if (!el.cntSelfPreviewVideo.find('video').length) {
       el.cntSelfVideo.hide()
       el.cntSelfPreviewVideo.show()
+      el.cntSelfPreviewVideo.find('video').remove();
       $(myVideo.el).prependTo(el.cntSelfPreviewVideo)
     }
 
@@ -217,16 +217,19 @@ async function initLocalStream(opts) {
 async function initPeer() {
   console.log('> socket::connect', { roomId, socketId: socket.id })
 
+  disconnected = false;
+
   await getRoomInfo(socket, { roomId })
 
   peer = new Peer({
-    path: '/',
-    host: rtcURL.hostname,
-    port: rtcURL.port,
-    secure: nodeEnv === 'production',
+    path: '/rtc',
+    host: svcURL.hostname,
+    port: svcURL.port,
+    // secure: nodeEnv === 'production',
     debug: nodeEnv === 'production' ? 3 : 2
   })
 
+  // * available peer methods
   // peer.call(id, stream, [options]);
   // peer.connect(id);
   // peer.disconnect();
@@ -386,3 +389,15 @@ socket.on('USER_LEAVE', ({ socketId, peerId, room: _room }) => {
     el.cntSelfPreviewVideo.hide()
   }
 });
+
+socket.on('disconnect', (message) => {
+  disconnected = true;
+  console.error('> socket::disconnect', message);
+  el.cntOther.find('.vlayer-1').remove()
+  el.cntOther.hide();
+
+  el.cntSelfPreviewVideo.find('video').prependTo(el.cntSelfVideo);
+  el.cntSelfPreviewVideo.hide();
+
+  el.cntSelfVideo.show();
+})

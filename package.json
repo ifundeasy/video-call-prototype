@@ -8,9 +8,7 @@
     "lint:fix": "eslint --ignore-path .gitignore . --fix",
     "test": "echo \"Error: no test specified\" && exit 1",
     "http": "node server.js",
-    "http:dev": "nodemon server.js",
-    "peer": "node peer.js",
-    "peer:dev": "nodemon peer.js"
+    "http:dev": "nodemon server.js"
   },
   "author": "",
   "license": "ISC",

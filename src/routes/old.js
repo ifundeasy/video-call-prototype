@@ -11,7 +11,6 @@ router.get('/:roomId', (req, res) => {
   res.render('old', {
     NODE_ENV: process.env.NODE_ENV,
     ROOM_ID: req.params.roomId,
-    RTC_URL: process.env.RTC_URL,
     SVC_URL: process.env.SVC_URL
   });
 });

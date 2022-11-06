@@ -15,7 +15,6 @@ router.get('/:roomId', async (req, res) => {
   res.render('meet', {
     NODE_ENV: process.env.NODE_ENV,
     ROOM_ID: roomId,
-    RTC_URL: process.env.RTC_URL,
     SVC_URL: process.env.SVC_URL
   });
 });

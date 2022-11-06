@@ -50,7 +50,6 @@ io.on('connection', (socket) => {
     console.log('socket::disconnect', socket.id, message)
 
     const [ first ] = await manager.getUserRooms({ socketId: socket.id });
-    console.log(first)
 
     // Since we are using default socket id (which is default)
     // So, every socket.id will always join to only 1 room.

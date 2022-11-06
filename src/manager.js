@@ -47,12 +47,18 @@ const addUser = async (roomId, { socketId, peerId, userId, userName }, status = 
 }
 
 const removeUser = async (roomId, { socketId, peerId = '*' }) => {
-  await redis.del(`stream:${roomId}:${socketId}:${peerId}`)
-  await redis.del(`account:${roomId}:${socketId}:${peerId}`)
+  await Promise.each(redis.keys(`stream:${roomId}:${socketId}:${peerId}`), async (key) => redis.del(key))
+  await Promise.each(redis.keys(`account:${roomId}:${socketId}:${peerId}`), async (key) => redis.del(key))
   return randomizeHost(roomId)
 }
 
+const flush = async () => {
+  await Promise.each(redis.keys(`stream:*`), async (key) => redis.del(key))
+  await Promise.each(redis.keys(`account:*`), async (key) => redis.del(key))
+}
+
 module.exports = {
+  flush,
   getUsers,
   addUser,
   removeUser,
