@@ -10,7 +10,7 @@
 Use tunnel for multi device, open new terminal session
 ```sh
 npm i -g localtunnel
-lt --port 3000
+lt --port 3030
 ```
 
 Run server, open new terminal session
