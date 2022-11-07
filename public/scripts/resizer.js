@@ -52,7 +52,7 @@ function resizeLayout(total, aspect = '16:9', debug = true) {
   newStyle.setAttribute('id', 'screen')
   newStyle.innerHTML = `
     .vid-layer-0 {
-      height: ${Mode == 'landscape' ? '100%' : 'none'}
+      height: ${Mode == 'landscape' ? '100% !important' : 'none'}
     }
     .vid-layer-1 {
       max-width: ${Width}px;

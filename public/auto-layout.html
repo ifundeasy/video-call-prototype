@@ -32,8 +32,10 @@
       return Math.floor(Math.random() * 16777215).toString(16);
     }
     
-    $(window).on('resize', () => resizeLayout(participant))
     $(() => {
+      $('body').css('height', '100vh')
+      $(window).on('resize', () => resizeLayout(participant))
+
       var parent = $('.row')
       var sample = parent.html();
       var z = setInterval(() => {
