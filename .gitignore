@@ -1,4 +1,7 @@
 trash
+public/assets/models/*
+!public/assets/models/hiyori_pro_en
+!public/assets/models/natori_pro_en
 
 # Logs
 logs
