@@ -5,11 +5,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Video Call</title>
-  <link rel="stylesheet" href="/libs/bootstrap/dist/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="/libs/bootswatch/dist/united/bootstrap.min.css" />
-  <link rel="stylesheet" href="/libs/bootstrap-icons/font/bootstrap-icons.css" />
+  <link rel="stylesheet" href="/modules/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/modules/bootswatch/dist/united/bootstrap.min.css" />
+  <link rel="stylesheet" href="/modules/bootstrap-icons/font/bootstrap-icons.css" />
   <link rel="stylesheet" href="/styles/meet.css" />
   <script>
+    window.MODELS_2D = JSON.parse('<%- JSON.stringify(MODELS_2D) %>');
     window.NODE_ENV = "<%= NODE_ENV %>";
     window.ROOM_ID = "<%= ROOM_ID %>";
     window.SVC_URL = new URL("<%= SVC_URL %>");
@@ -186,10 +187,10 @@
     </div>
   </footer>
 
-  <script src="/libs/bootstrap/dist/js/bootstrap.min.js"></script>
-  <script src="/libs/jquery/dist/jquery.min.js"></script>
-  <script src="/libs/peerjs/dist/peerjs.min.js"></script>
-  <script src="/libs/socket.io-client/dist/socket.io.min.js"></script>
+  <script src="/modules/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="/modules/jquery/dist/jquery.min.js"></script>
+  <script src="/modules/peerjs/dist/peerjs.min.js"></script>
+  <script src="/modules/socket.io-client/dist/socket.io.min.js"></script>
   <script src="/scripts/meet.js"></script>
 </body>
 
