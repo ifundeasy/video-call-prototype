@@ -19,7 +19,7 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 app.use('/modules', express.static(path.join(__dirname, '..', 'node_modules')));
 
 // Express.js routes
-app.get('/', (req, res) => res.send('Hello World!'));
+app.get('/', (req, res) => res.render('home'));
 app.use('/meet', require('./routes/meet'))
 
 module.exports = app

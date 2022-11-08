@@ -43,6 +43,15 @@ el.btnMic.on('click', (event) => {
   localStream.getAudioTracks()[0].enabled = state.mic;
 })
 
+el.btnCall.on('click', (event) => {
+  socket.disconnect();
+  socket.destroy();
+  peer.disconnect();
+  peer.destroy();
+  alert('Bye bye..')
+  window.location.href = '/'
+})
+
 el.btnCamera.on('click', (event) => {
   const child = el.btnCamera.find('i');
   if (child.hasClass('bi-camera-video-off')) {

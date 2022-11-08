@@ -5,6 +5,15 @@
 * nodejs >= 16.6.0
 * redis >= 7.0.1
 
+## WebRTC Topology
+`Mesh` or PeerToPeer, support > 2 participant (depend user connection)
+
+## Feature
+* Multi room instance
+* Chat
+* Video conference
+* Face motion detector (soon)
+
 ## Run on local
 
 Use tunnel for multi device, open new terminal session
