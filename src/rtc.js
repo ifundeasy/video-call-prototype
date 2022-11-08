@@ -1,4 +1,5 @@
 const { ExpressPeerServer } = require('peer');
+
 const options = {
   path: '/',
   debug: true,
@@ -15,18 +16,17 @@ const attach = (server, app) => {
   peer.on('connection', (socket) => {
     console.info('> peer::connection', socket.id);
   });
-  
+
   peer.on('disconnect', (socket) => {
     console.warn('> peer::disconnect', socket.id);
   });
-  
+
   peer.on('message', (socket, message) => {
-    if (message.type == 'HEARTBEAT') {
+    if (message.type === 'HEARTBEAT') {
       // console.debug('> peer::message', socket.id, message);
     } else {
-      // console.info('> peer::message', socket.id, message)
+      console.info('> peer::message', socket.id, message)
     }
-      
   });
 
   peer.on('error', (socket, message) => {

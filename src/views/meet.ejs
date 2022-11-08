@@ -87,73 +87,30 @@
   </div>
 
   <!-- content -->
-  <main class="flex-shrink-0 h-100">
-    <div class="vlayer-self h-100 w-100">
-      <div class="d-flex align-items-center justify-content-center h-100">
-        <div class="d-flex flex-column h-100 w-100" id="cnt-self">
-          <!-- <video></video> -->
-          <div class="other-name">
+  <main class="container-fluid text-center h-100 w-100 m-0">
+    <div id="stream-container" class="resizer row d-flex align-items-center justify-content-center">
+      <div id="self-content" class="resizer-outer d-flex flex-column col">
+        <div class="resizer-inner">
+          <div class="user-avatar d-flex align-items-center justify-content-center">
+            <img src="/favicon.ico" class="">
+          </div>
+          <div class="user-info user-info-badge">
             <span>You</span>
           </div>
         </div>
       </div>
-    </div>
-    <div class="container h-100">
-      <div id="cnt-other" class="vlayer-0 row h-100 justify-content-center">
-        <div class="vlayer-1 col-lg-4 col-md-4 col-sm-6 col-xs-12">
-          <div class="vlayer-2 row h-100">
-            <div class="vlayer-3 col w-100">
-              <div class="vlayer-4 d-flex align-items-center justify-content-center">
-                <!-- <video></video> -->
-                <div class="other-name">
-                  <span>Participant 1</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="vlayer-1 col-lg-4 col-md-4 col-sm-6 col-xs-12">
-          <div class="vlayer-2 row h-100">
-            <div class="vlayer-3 col w-100">
-              <div class="vlayer-4 d-flex align-items-center justify-content-center">
-                <!-- <video></video> -->
-                <div class="other-name">
-                  <span>Participant 2</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="vlayer-1 col-lg-4 col-md-4 col-sm-6 col-xs-12">
-          <div class="vlayer-2 row h-100">
-            <div class="vlayer-3 col w-100">
-              <div class="vlayer-4 d-flex align-items-center justify-content-center">
-                <!-- <video></video> -->
-                <div class="other-name">
-                  <span>Participant 3</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="vlayer-1 col-lg-4 col-md-4 col-sm-6 col-xs-12">
-          <div class="vlayer-2 row h-100">
-            <div class="vlayer-3 col w-100">
-              <div class="vlayer-4 d-flex align-items-center justify-content-center">
-                <!-- <video></video> -->
-                <div class="other-name">
-                  <span>Participant 4</span>
-                </div>
-              </div>
-            </div>
+      <div class="resizer-outer d-flex flex-column col">
+        <div class="resizer-inner">
+          <video class="user-video" src="/assets/videos/example.mov"></video>
+          <div class="user-info user-info-badge">
+            <span>Adam</span>
           </div>
         </div>
       </div>
     </div>
-
-    <div class="vlayer-preview">
-      <!-- <video></video> -->
-      <div class="other-name">
+    <div id="preview-container" class="self-preview">
+      <video class="user-video" src="/assets/videos/example.mov"></video>
+      <div class="user-info">
         <span>You</span>
       </div>
     </div>
@@ -163,25 +120,19 @@
   <!-- static absolute footer -->
   <footer class="footer mt-auto py-3 bg-light">
     <div class="container text-center">
-      <button type="button" class="btn btn-lg btn-info" id="btn-camera">
-        <i class="bi bi-camera-video"></i>
+      <button type="button" class="btn btn-md btn-light" id="btn-info">
+        <i class="bi bi-info-circle"></i>
       </button>
-      <button type="button" class="btn btn-lg btn-dark" id="btn-avatar">
-        <i class="bi bi-person-circle"></i>
-      </button>
-      <button type="button" class="btn btn-lg btn-primary" id="btn-camera-off">
+      <button type="button" class="btn btn-md btn-light" id="btn-camera">
         <i class="bi bi-camera-video-off"></i>
       </button>
-      <button type="button" class="btn btn-lg btn-info" id="btn-mic">
-        <i class="bi bi-mic"></i>
-      </button>
-      <button type="button" class="btn btn-lg btn-primary" id="btn-mic-off">
-        <i class="bi bi-mic-mute"></i>
-      </button>
-      <button type="button" class="btn btn-lg btn-danger" id="btn-call-end">
+      <button type="button" class="btn btn-lg btn-danger" id="btn-call">
         <i class="bi bi-telephone-x-fill"></i>
       </button>
-      <button type="button" class="btn btn-lg btn-secondary" data-bs-toggle="modal" data-bs-target="#mdl-chat">
+      <button type="button" class="btn btn-md btn-light" id="btn-mic">
+        <i class="bi bi-mic-mute"></i>
+      </button>
+      <button type="button" class="btn btn-md btn-secondary" data-bs-toggle="modal" data-bs-target="#mdl-chat">
         <i class="bi bi-chat-quote"></i>
       </button>
     </div>
@@ -191,6 +142,8 @@
   <script src="/modules/jquery/dist/jquery.min.js"></script>
   <script src="/modules/peerjs/dist/peerjs.min.js"></script>
   <script src="/modules/socket.io-client/dist/socket.io.min.js"></script>
+  <script src="/modules/bluebird/js/browser/bluebird.min.js"></script>
+  <script src="/scripts/resizer.js"></script>
   <script src="/scripts/meet.js"></script>
 </body>
 
