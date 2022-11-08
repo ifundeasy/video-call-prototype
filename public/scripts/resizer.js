@@ -1,5 +1,7 @@
+/* eslint-disable no-nested-ternary */
+
 function getScreenRatio(a, b) {
-  return (b == 0) ? a : getScreenRatio(b, a % b);
+  return (b === 0) ? a : getScreenRatio(b, a % b);
 }
 
 function resizeLayout(total, aspect = '16:9', debug = true) {
@@ -8,7 +10,7 @@ function resizeLayout(total, aspect = '16:9', debug = true) {
   const Width = window.innerWidth;
   const Height = window.innerHeight;
   const Ratio = getScreenRatio(Width, Height);
-  const Mode = Width > Height ? 'landscape' : Width == Height ? 'square' : 'portrait';
+  const Mode = Width > Height ? 'landscape' : Width === Height ? 'square' : 'portrait';
 
   // which bigger
   // const bigger = Width >= Height ? Width : Height;
@@ -16,63 +18,54 @@ function resizeLayout(total, aspect = '16:9', debug = true) {
   // const percent = smaller / bigger * 100;
 
   let columns = 1
-  if (Mode == 'portrait') {
+  if (Mode === 'portrait') {
     columns = total < 4 ? 1 : 2;
-  } else {
-    if (Width < 320) {
-      if (total > 1) columns = 2
-    } else if (Width < 1600) {
-      if (total == 3) columns = 3
-      else if (total <= 4) columns = 2
-      else if (total > 4) columns = 3
-    } else if (Width < 1920) {
-      if (total == 3) columns = 3
-      else if (total <= 4) columns = 2
-      else if (total <= 9) columns = 3
-      else if (total > 9) columns = 4
-    } else if (Width > 1920) {
-      if (total == 3) columns = 3
-      else if (total <= 4) columns = 2
-      else if (total <= 9) columns = 3
-      else if (total <= 16) columns = 4
-      else if (total > 16) columns = 5
-    }
+  } else if (Width < 320) {
+    if (total > 1) columns = 2
+  } else if (Width < 1600) {
+    if (total === 3) columns = 3
+    else if (total <= 4) columns = 2
+    else if (total > 4) columns = 3
+  } else if (Width < 1920) {
+    if (total === 3) columns = 3
+    else if (total <= 4) columns = 2
+    else if (total <= 9) columns = 3
+    else if (total > 9) columns = 4
+  } else if (Width > 1920) {
+    if (total === 3) columns = 3
+    else if (total <= 4) columns = 2
+    else if (total <= 9) columns = 3
+    else if (total <= 16) columns = 4
+    else if (total > 16) columns = 5
   }
 
   const widthMin = Width / columns;
   let percent = 100; // which mean square
-  if (aspect == '16:9') percent = 56.25;
-  else if (aspect == '4:3') percent = 75;
+  if (aspect === '16:9') percent = 56.25;
+  else if (aspect === '4:3') percent = 75;
   const heightMin = widthMin * (percent / 100)
 
-  const oldStyle = document.getElementById("screen");
+  const oldStyle = document.getElementById('screen');
   if (oldStyle) oldStyle.parentNode.removeChild(oldStyle);
 
   const newStyle = document.createElement('style');
   newStyle.setAttribute('id', 'screen')
   newStyle.innerHTML = `
-    .vid-layer-0 {
-      height: ${Mode == 'landscape' ? '100%' : 'none'}
+    .resizer {
+      height: ${Mode === 'landscape' ? '100% !important' : 'none'}
     }
-    .vid-layer-1 {
+    .resizer-outer {
       max-width: ${Width}px;
       max-height: ${Height}px;
       min-width: ${widthMin}px;
       min-height: ${heightMin}px;
       padding: 10px;
     }
-    .vid-layer-2 {
+    .resizer-inner {
       padding-top: ${percent}%;
       width: 100%;
       height: 100%;
       position: relative;
-    }
-    .vid-layer-3 {
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
     }
     .styleInjectorDebugger {
       position: fixed;
@@ -92,7 +85,7 @@ function resizeLayout(total, aspect = '16:9', debug = true) {
   body.append(newStyle)
 
   if (debug) {
-    const oldDebugEl = document.getElementsByClassName("styleInjectorDebugger");
+    const oldDebugEl = document.getElementsByClassName('styleInjectorDebugger');
     if (oldDebugEl.length) oldDebugEl[0].parentNode.removeChild(oldDebugEl[0]);
 
     const newDebugEl = document.createElement('div')

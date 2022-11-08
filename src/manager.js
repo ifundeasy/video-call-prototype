@@ -1,3 +1,5 @@
+/* eslint-disable no-use-before-define, prefer-destructuring */
+
 const Promise = require('bluebird')
 const redis = require('./redis')()
 
@@ -13,12 +15,10 @@ const randomizeHost = async (roomId, { socketId, peerId } = {}) => {
   return false
 }
 
-const getUserRooms = async ({ socketId, peerId = '*' }) => {
-  return Promise.map(redis.keys(`stream:*:${socketId}:${peerId}`), async (key) => {
-    // [roomId, socketId, peerId]
-    return key.split(/:|\|/g).slice(1)
-  })
-}
+const getUserRooms = async ({ socketId, peerId = '*' }) => Promise.map(redis.keys(`stream:*:${socketId}:${peerId}`), async (key) => {
+  // [roomId, socketId, peerId]
+  key.split(/:|\|/g).slice(1)
+})
 
 const getUsers = async (roomId) => {
   const data = {
@@ -27,10 +27,10 @@ const getUsers = async (roomId) => {
     accounts: {}
   };
   await Promise.each(redis.keys(`*:${roomId}:*`), async (key) => {
-    const [ k, , socketId, peerId ] = key.split(':');
+    const [k, , socketId, peerId] = key.split(':');
     const id = `${socketId}:${peerId}`
     const value = await redis.get(key)
-    if (k == 'account') {
+    if (k === 'account') {
       data.accounts[id] = JSON.parse(value)
     } else if (value === 'host') data.host = id
     else data.participants.push(id)
@@ -39,10 +39,16 @@ const getUsers = async (roomId) => {
   return data;
 }
 
-const addUser = async (roomId, { socketId, peerId, userId, userName }, status = 'participant') => {
+const addUser = async (roomId, {
+  socketId, peerId, userId, userName
+}, status = 'participant') => {
   await redis.set(`stream:${roomId}:${socketId}:${peerId}`, status)
   await redis.set(`account:${roomId}:${socketId}:${peerId}`, JSON.stringify({ userId, userName }))
-  if (status === 'host') return randomizeHost(roomId, { socketId, peerId, userId, userName })
+  if (status === 'host') {
+    return randomizeHost(roomId, {
+      socketId, peerId, userId, userName
+    })
+  }
   return randomizeHost(roomId)
 }
 
@@ -53,8 +59,8 @@ const removeUser = async (roomId, { socketId, peerId = '*' }) => {
 }
 
 const flush = async () => {
-  await Promise.each(redis.keys(`stream:*`), async (key) => redis.del(key))
-  await Promise.each(redis.keys(`account:*`), async (key) => redis.del(key))
+  await Promise.each(redis.keys('stream:*'), async (key) => redis.del(key))
+  await Promise.each(redis.keys('account:*'), async (key) => redis.del(key))
 }
 
 module.exports = {

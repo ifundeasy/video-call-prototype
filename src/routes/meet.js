@@ -23,7 +23,6 @@ router.get('/', async (req, res) => {
 
 router.get('/:roomId', async (req, res) => {
   const { roomId } = req.params;
-  console.log(get2dModels())
 
   res.render('meet', {
     MODELS_2D: get2dModels(),

@@ -21,6 +21,7 @@ io.on('connection', (socket) => {
     console.log('socket::GET_ROOM_INFO', { roomId })
 
     const users = await manager.getUsers(roomId);
+    console.log(users)
     socket.emit('ROOM_INFO', { data: users });
   });
 
@@ -31,7 +32,9 @@ io.on('connection', (socket) => {
       roomId, peerId, socketId: socket.id, userId, userName
     })
 
-    await manager.addUser(roomId, { socketId: socket.id, peerId, userId, userName });
+    await manager.addUser(roomId, {
+      socketId: socket.id, peerId, userId, userName
+    });
     const users = await manager.getUsers(roomId);
 
     socket.join(roomId);
@@ -41,19 +44,25 @@ io.on('connection', (socket) => {
     });
   });
 
-  socket.on('NEW_MESSAGE', ({ roomId, peerId, socketId, userId, userName, data }) => {
-    console.log('socket::NEW_MESSAGE', { roomId, peerId, socketId, userId, userName, data })
-    io.sockets.to(roomId).emit('USER_MESSAGE', { roomId, peerId, socketId, userId, userName, data });
+  socket.on('NEW_MESSAGE', ({
+    roomId, peerId, socketId, userId, userName, data
+  }) => {
+    console.log('socket::NEW_MESSAGE', {
+      roomId, peerId, socketId, userId, userName, data
+    })
+    io.sockets.to(roomId).emit('USER_MESSAGE', {
+      roomId, peerId, socketId, userId, userName, data
+    });
   });
 
   socket.on('disconnect', async (message) => {
     console.log('socket::disconnect', socket.id, message)
 
-    const [ first ] = await manager.getUserRooms({ socketId: socket.id });
+    const [first] = await manager.getUserRooms({ socketId: socket.id });
 
     // Since we are using default socket id (which is default)
     // So, every socket.id will always join to only 1 room.
-    const [ roomId, , peerId ] = first || [];
+    const [roomId, , peerId] = first || [];
     if (roomId) {
       await manager.removeUser(roomId, { socketId: socket.id, peerId });
       const users = await manager.getUsers(roomId);
