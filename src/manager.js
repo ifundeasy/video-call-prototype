@@ -1,4 +1,4 @@
-/* eslint-disable no-use-before-define, prefer-destructuring */
+/* eslint-disable arrow-body-style, no-use-before-define, prefer-destructuring */
 
 const Promise = require('bluebird')
 const redis = require('./redis')()
@@ -15,10 +15,12 @@ const randomizeHost = async (roomId, { socketId, peerId } = {}) => {
   return false
 }
 
-const getUserRooms = async ({ socketId, peerId = '*' }) => Promise.map(redis.keys(`stream:*:${socketId}:${peerId}`), async (key) => {
-  // [roomId, socketId, peerId]
-  key.split(/:|\|/g).slice(1)
-})
+const getUserRooms = async ({ socketId, peerId = '*' }) => {
+  return Promise.map(redis.keys(`stream:*:${socketId}:${peerId}`), async (key) => {
+    // [roomId, socketId, peerId]
+    return key.split(/:|\|/g).slice(1)
+  })
+};
 
 const getUsers = async (roomId) => {
   const data = {

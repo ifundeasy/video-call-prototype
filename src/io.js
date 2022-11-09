@@ -44,6 +44,20 @@ io.on('connection', (socket) => {
     });
   });
 
+  socket.on('LEAVE_ROOM', async ({
+    roomId, peerId, userId, userName
+  }) => {
+    console.log('socket::LEAVE_ROOM', {
+      roomId, peerId, socketId: socket.id, userId, userName
+    })
+
+    await manager.removeUser(roomId, { socketId: socket.id, peerId });
+    const users = await manager.getUsers(roomId);
+
+    socket.emit('LEAVE_FROM_ROOM');
+    io.sockets.to(roomId).emit('USER_LEAVE', { socketId: socket.id, peerId, room: users });
+  });
+
   socket.on('NEW_MESSAGE', ({
     roomId, peerId, socketId, userId, userName, data
   }) => {
@@ -67,7 +81,7 @@ io.on('connection', (socket) => {
       await manager.removeUser(roomId, { socketId: socket.id, peerId });
       const users = await manager.getUsers(roomId);
 
-      socket.broadcast.emit('USER_LEAVE', { socketId: socket.id, peerId, room: users });
+      io.sockets.to(roomId).emit('USER_LEAVE', { socketId: socket.id, peerId, room: users });
     }
   });
 });

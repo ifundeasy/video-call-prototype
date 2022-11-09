@@ -44,12 +44,12 @@ el.btnMic.on('click', (event) => {
 })
 
 el.btnCall.on('click', (event) => {
-  socket.disconnect();
-  socket.destroy();
-  peer.disconnect();
-  peer.destroy();
-  alert('Bye bye..')
-  window.location.href = '/'
+  socket.emit('LEAVE_ROOM', {
+    roomId: state.roomId,
+    peerId: state.peerId,
+    userId: state.userId,
+    userName: state.userName
+  })
 })
 
 el.btnCamera.on('click', (event) => {
@@ -326,10 +326,11 @@ async function addVideoStream({
 
   if (!added) return newVideo.remove();
 
+  // newVideo.setAttribute('controls', 'controls')
   newVideo.setAttribute('class', 'user-video')
   newVideo.srcObject = stream;
-  if (camera === false) stream.getVideoTracks()[0].enabled = false;
-  if (mic === false) stream.getAudiTracks()[0].enabled = false;
+  if (camera === false) newVideo.srcObject.getVideoTracks()[0].enabled = false;
+  if (mic === false) newVideo.srcObject.getAudioTracks()[0].enabled = false;
 
   newVideo.addEventListener('loadedmetadata', () => {
     newVideo.play();
@@ -373,7 +374,8 @@ $(async () => {
       socketId: socket.id,
       userId: state.userId,
       userName: state.userName,
-      muted: state.mic,
+      muted: true,
+      mic: state.mic,
       camera: state.camera,
       forPreview: true,
       stream: localStream,
@@ -405,6 +407,17 @@ $(async () => {
         }
       })
     }
+  });
+
+  socket.on('LEAVE_FROM_ROOM', () => {
+    console.log('> socket::LEAVE_FROM_ROOM')
+
+    socket.disconnect();
+    socket.destroy();
+    peer.disconnect();
+    peer.destroy();
+    alert('Bye bye..')
+    window.location.href = '/'
   });
 
   socket.on('USER_JOINED', ({
