@@ -15,25 +15,54 @@ const io = new socketIO.Server({
 });
 
 io.on('connection', (socket) => {
-  console.log('> io::connection', socket.id)
+  console.info('io::connection', socket.id)
+
+  socket.on('FRAME_TYPE', async ({
+    roomId, peerId, userId, userName, data
+  }) => {
+    console.debug('socket::FRAME_TYPE', {
+      roomId, peerId, userId, userName, data
+    })
+
+    await manager.setUserFrameType(roomId, {
+      socketId: socket.id,
+      peerId,
+      frameType: data
+    })
+
+    socket.broadcast.to(roomId).emit('USER_FRAME_TYPE', {
+      roomId, peerId, socketId: socket.id, userId, userName, data
+    });
+  });
+
+  socket.on('FRAME_ANIMATION', async ({
+    roomId, peerId, userId, userName, data
+  }) => {
+    console.debug('socket::FRAME_ANIMATION', {
+      roomId, peerId, userId, userName, data: '...'
+    })
+
+    socket.broadcast.to(roomId).emit('USER_FRAME_ANIMATION', {
+      roomId, peerId, socketId: socket.id, userId, userName, data
+    });
+  });
 
   socket.on('GET_ROOM_INFO', async ({ roomId }) => {
-    console.log('socket::GET_ROOM_INFO', { roomId })
+    console.debug('socket::GET_ROOM_INFO', { roomId })
 
     const users = await manager.getUsers(roomId);
-    console.log(users)
     socket.emit('ROOM_INFO', { data: users });
   });
 
   socket.on('JOIN_ROOM', async ({
-    roomId, peerId, userId, userName
+    roomId, peerId, userId, userName, frameType
   }) => {
-    console.log('socket::JOIN_ROOM', {
+    console.debug('socket::JOIN_ROOM', {
       roomId, peerId, socketId: socket.id, userId, userName
     })
 
     await manager.addUser(roomId, {
-      socketId: socket.id, peerId, userId, userName
+      socketId: socket.id, peerId, userId, userName, frameType
     });
     const users = await manager.getUsers(roomId);
 
@@ -47,7 +76,7 @@ io.on('connection', (socket) => {
   socket.on('LEAVE_ROOM', async ({
     roomId, peerId, userId, userName
   }) => {
-    console.log('socket::LEAVE_ROOM', {
+    console.debug('socket::LEAVE_ROOM', {
       roomId, peerId, socketId: socket.id, userId, userName
     })
 
@@ -61,7 +90,7 @@ io.on('connection', (socket) => {
   socket.on('NEW_MESSAGE', ({
     roomId, peerId, socketId, userId, userName, data
   }) => {
-    console.log('socket::NEW_MESSAGE', {
+    console.debug('socket::NEW_MESSAGE', {
       roomId, peerId, socketId, userId, userName, data
     })
     io.sockets.to(roomId).emit('USER_MESSAGE', {
@@ -70,7 +99,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', async (message) => {
-    console.log('socket::disconnect', socket.id, message)
+    console.warn('socket::disconnect', socket.id, message)
 
     const [first] = await manager.getUserRooms({ socketId: socket.id });
 

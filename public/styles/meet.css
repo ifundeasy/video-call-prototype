@@ -5,6 +5,14 @@ body {
   background-color: #f5f5f5;
 }
 
+#slc-model {
+  position: fixed;
+  right: 10px;
+  top: 10px;
+  z-index: 100;
+  width: 100px;
+}
+
 #mdl-chat .modal-content {
   height: auto;
   min-height: 100%;
@@ -63,9 +71,12 @@ footer.footer button i {
   left: 0;
   /* object-fit: contain; */
   object-fit: cover;
-  transform: rotateY(180deg);
+  /* transform: rotateY(180deg);
   -webkit-transform: rotateY(180deg);
-  -moz-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg); */
+  transform: scale(-1, 1);
+  -webkit-transform: scale(-1, 1);
+  -moz-transform: scale(-1, 1);
 }
 
 .user-avatar {
@@ -104,6 +115,17 @@ footer.footer button i {
   background-color: black;
   width: 320px;
   height: 180px;
+}
+
+.self-preview .user-avatar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  top: -15%;
+  height: calc(100% + 30%);
+  transform: scale(-1, 1);
+  -webkit-transform: scale(-1, 1);
+  -moz-transform: scale(-1, 1);
 }
 
 @media screen and (max-width: 992px) {

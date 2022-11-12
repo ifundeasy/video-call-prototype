@@ -45,7 +45,7 @@ module.exports = {
     'jest/prefer-to-have-length': 'warn',
     'jest/valid-expect': 'error'
   },
-  ignorePatterns: ['node_modules', 'dist'],
+  ignorePatterns: ['node_modules', 'dist', 'public/libs'],
   settings: {
     'import/resolver': {
       node: {
