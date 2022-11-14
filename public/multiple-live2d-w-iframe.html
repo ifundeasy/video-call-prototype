@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        padding: 0;
+        margin: 0;
+        height: 100vh;
+      }
+      .container {
+        width: 50%;
+        height: 50%
+      }
+      iframe {
+        border: none;
+        width: 100%;
+        height: 100%;
+      }
+      .bg-antiquewhite {
+        background-color: antiquewhite;
+      }
+      .bg-azure {
+        background-color: azure;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container-1" class="container bg-antiquewhite">
+      <iframe id="iframe-1" src="/live2d-renderer/hiyori"></iframe>
+    </div>
+    <div id="container-2" class="container bg-azure">
+      <iframe id="iframe-2" src="/live2d-renderer/natori"></iframe>
+    </div>
+    <script>
+      const iframe = document.getElementsByTagName("iframe")
+      for (let i = 0; i < iframe.length; i++) {
+        periodicSend(iframe[i], 1)
+      }
+
+      function periodicSend (iframe, ms) {
+        const { id, src } = iframe;
+        const { contentWindow } = iframe
+
+        const z = setInterval(() => {
+          const ts = new Date().getTime();
+          const payload = { id, src, ts }
+          // console.log('sending:', payload)
+          contentWindow.postMessage(payload);
+        }, ms)
+      }
+    </script>
+</html>
+
+

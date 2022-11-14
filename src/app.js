@@ -21,5 +21,6 @@ app.use('/modules', express.static(path.join(__dirname, '..', 'node_modules')));
 // Express.js routes
 app.get('/', (req, res) => res.render('home'));
 app.use('/meet', require('./routes/meet'))
+app.use('/live2d-renderer', require('./routes/live2d-renderer'))
 
 module.exports = app

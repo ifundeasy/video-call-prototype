@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        padding: 0;
+        margin: 0;
+        height: 100vh;
+      }
+      pre {
+        margin: 0;
+        position: fixed;
+        width: 50%
+      }
+    </style>
+    <script>
+      window.MODEL_LIVE_2D = "<%= MODEL_LIVE_2D %>";
+      window.NODE_ENV = "<%= NODE_ENV %>";
+      window.ROOM_ID = "<%= ROOM_ID %>";
+      window.SOCKET_ID = "<%= SOCKET_ID %>";
+      window.SVC_URL = new URL("<%= SVC_URL %>");
+    </script>
+  </head>
+  <body>
+    <pre></pre>
+    <canvas></canvas>
+    <script src="/libs/live2dcubismcore.min.js"></script>
+    <script src="/libs/webgl-live2d.min.js"></script>
+    <script src="/modules/pixi.js/dist/pixi.min.js"></script>
+    <script src="/modules/pixi-live2d-display/dist/index.min.js"></script>
+    <script>
+      const {
+        Application,
+        Container,
+        live2d: { Live2DModel, Live2DFactory }
+      } = PIXI;
+    
+      async function render({ canvasEl, parentEl, modelUrl }) {
+        const app = new Application({
+          view: canvasEl,
+          autoStart: true,
+          transparent: true,
+          backgroundAlpha: 0,
+          resizeTo: parentEl
+        });
+    
+        // Load live2d model
+        // const currentModel = new Live2DModel({ autoInteract: false })
+        // await Live2DFactory.setupLive2DModel(currentModel, modelUrl, { autoInteract: false })
+        const currentModel = await Live2DModel.from(modelUrl, { autoInteract: false });
+        currentModel.scale.set(0.1);
+        currentModel.interactive = true;
+        currentModel.anchor.set(0.5, 0.5);
+        currentModel.position.set(parentEl.offsetWidth * 0.5, parentEl.offsetHeight * 0.8);
+    
+        // Add events to drag model
+        currentModel.on('pointerdown', e => {
+          currentModel.offsetX = e.data.global.x - currentModel.position.x;
+          currentModel.offsetY = e.data.global.y - currentModel.position.y;
+          currentModel.dragging = true;
+        });
+        currentModel.on('pointerup', e => {
+          currentModel.dragging = false;
+        });
+        currentModel.on('pointermove', e => {
+          if (currentModel.dragging) {
+            currentModel.position.set(
+              e.data.global.x - currentModel.offsetX,
+              e.data.global.y - currentModel.offsetY
+            );
+          }
+        });
+
+        app.stage.addChild(currentModel);
+      }
+
+      function animate(event) {
+        if (event.origin !== window.location.origin) return;
+
+        const { data, origin, source } = event;
+        const ticker = document.getElementsByTagName('pre')[0];
+        if (ticker) {
+          ticker.innerHTML = JSON.stringify({
+            from: origin,
+            ...data
+          }, 0, 2)
+        }
+      }
+
+      console.debug(window.location.pathname)
+
+      if (window.NODE_ENV !== 'development') document.getElementsByTagName('pre')[0].remove()
+      if (MODEL_LIVE_2D) {
+        render({
+          canvasEl: document.getElementsByTagName('canvas')[0],
+          parentEl: document.getElementsByTagName('body')[0],
+          modelUrl: MODEL_LIVE_2D
+        })
+
+        if (window.addEventListener) {
+          window.addEventListener("message", animate, false);
+        } else {
+          window.attachEvent("onmessage", animate);
+        }
+      }
+    </script>
+</html>
+
+
