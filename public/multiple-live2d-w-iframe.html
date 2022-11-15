@@ -35,7 +35,7 @@
     <script>
       const iframe = document.getElementsByTagName("iframe")
       for (let i = 0; i < iframe.length; i++) {
-        periodicSend(iframe[i], 1)
+        periodicSend(iframe[i], 1000)
       }
 
       function periodicSend (iframe, ms) {
@@ -43,9 +43,9 @@
         const { contentWindow } = iframe
 
         const z = setInterval(() => {
-          const ts = new Date().getTime();
-          const payload = { id, src, ts }
-          // console.log('sending:', payload)
+          const timestamp = new Date().getTime();
+          const payload = { socketId: id, src, timestamp }
+          console.log('Publishing:', payload)
           contentWindow.postMessage(payload);
         }, ms)
       }

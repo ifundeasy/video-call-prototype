@@ -1,19 +1,5 @@
 /* eslint-disable no-undef, consistent-return, no-alert, no-use-before-define */
 
-const {
-  Application,
-  live2d: { Live2DModel, Live2DFactory }
-} = PIXI;
-
-// Kalidokit provides a simple easing function
-// (linear interpolation) used for animation smoothness
-// you can use a more advanced easing function if you want
-const {
-  Face,
-  Vector: { lerp },
-  Utils: { clamp }
-} = Kalidokit;
-
 window.el = {
   slcModel: $('#slc-model'),
   mdlChat: $('#mdl-chat'),
@@ -27,13 +13,13 @@ window.el = {
   inpMsg: $('#inp-msg'),
   btnSendMsg: $('#btn-send-msg')
 };
-window.useFacemesh = true;
+window.useFacemesh = false;
 window.facemeshBinary = '/modules/@mediapipe/face_mesh/';
 window.facemesh = undefined;
 window.localStream = undefined; // MediaStream object
 window.otherStreams = {}; // MediaStream object
-window.localAnimation = {}; // PIXI.Application object
-window.otherAnimations = {}; // PIXI.Application objects
+window.localModel = {};
+window.otherModels = {};
 window.socket = undefined; // Socket io client object
 window.peer = undefined; // Peerjs client object
 window.state = {
@@ -65,10 +51,7 @@ el.slcModel.on('change', function () {
   }
   addModelAnimation({
     socketId: socket.id,
-    animation: {
-      ...localAnimation,
-      state: state.model,
-    },
+    model: state.model,
     parentEl: el.cntMyContent.find('.resizer-inner')
   })
   socket.emit('FRAME_TYPE', {
@@ -130,10 +113,10 @@ el.btnCamera.on('click', (event) => {
 
     el.slcModel.fadeIn();
     el.cntMyContent.removeClass('hide-important');
-    localAnimation.state = data;
+    localModel = data;
     addModelAnimation({
       socketId: socket.id,
-      animation: localAnimation,
+      model: localModel,
       parentEl: el.cntMyContent.find('.resizer-inner')
     });
   } else {
@@ -293,45 +276,32 @@ async function connectToOther({
 
   call.on('stream', (stream) => {
     console.debug('call::stream (from=non-host)', { call })
-    const otherContainerEl = addParticipantContainer({
+    const participantEl = addParticipantEl({
       socketId,
       userName,
       parentEl: el.cntStream
     });
-    if (!otherContainerEl.exist) {
-      const parentEl = otherContainerEl.el.find('.resizer-inner')
-      addVideoStream({
-        socketId,
-        userId,
-        stream,
-        parentEl
-      });
+    const parentEl = participantEl.el.find('.resizer-inner')
+    addVideoStream({
+      socketId,
+      userId,
+      stream,
+      parentEl
+    });
 
-      const account = `${socketId}:${peerId}`;
-      const frameType = state.room.frameTypes[account];
-      if (!frameType.val) {
-        parentEl.find('video').fadeIn();
-        parentEl.find('canvas').fadeOut();
-        return
-      }
-
-      otherAnimations[socketId] = otherAnimations[socketId] || {}
-      otherAnimations[socketId].state = frameType
+    const account = `${socketId}:${peerId}`;
+    const model = state.room.frameTypes[account];
+    if (model.val) {
       addModelAnimation({
         socketId,
-        animation: {
-          ...otherAnimations[socketId],
-          state: frameType
-        },
+        model,
         parentEl
       });
-      parentEl.find('canvas').fadeIn();
-      parentEl.find('video').fadeOut()
     }
   });
 }
 
-function addParticipantContainer({ socketId, userName, parentEl }) {
+function addParticipantEl({ socketId, userName, parentEl }) {
   let exist = false;
   if (otherStreams[socketId]) {
     childEl = parentEl.find(`[socketId="${socketId}"]`)
@@ -353,6 +323,15 @@ function addParticipantContainer({ socketId, userName, parentEl }) {
   return { exist, el: childEl };
 }
 
+function addVideoEl({ parentEl }) {
+  const videoEl = document.createElement('video')
+  // videoEl.setAttribute('controls', 'controls')
+  videoEl.setAttribute('class', 'user-video')
+
+  parentEl.prepend(videoEl)
+  return videoEl
+}
+
 async function addVideoStream({
   socketId,
   stream,
@@ -361,23 +340,18 @@ async function addVideoStream({
   forPreview,
   parentEl
 }) {
+  videoEl = parentEl.find('video')[0] || addVideoEl({ parentEl })
+
   if (forPreview) {
-    const videoEl = parentEl.find('video')[0]
     videoEl.muted = true;
-    if (camera === false) stream.getVideoTracks()[0].enabled = false;
-    if (mic === false) stream.getAudioTracks()[0].enabled = false;
-    return videoEl;
+  } else {
+    parentEl.find('iframe').remove();
+    otherStreams[socketId] = stream;
+    videoEl.srcObject = stream;
   }
 
-  otherStreams[socketId] = true;
-  const videoEl = document.createElement('video')
-
-  // videoEl.setAttribute('controls', 'controls')
-  videoEl.setAttribute('class', 'user-video')
-  videoEl.srcObject = stream;
-  if (camera === false) videoEl.srcObject.getVideoTracks()[0].enabled = false;
-  if (mic === false) videoEl.srcObject.getAudioTracks()[0].enabled = false;
-  parentEl.prepend(videoEl);
+  if (camera === false) stream.getVideoTracks()[0].enabled = false;
+  if (mic === false) stream.getAudioTracks()[0].enabled = false;
 
   videoEl.addEventListener('loadedmetadata', () => {
     videoEl.play();
@@ -386,76 +360,29 @@ async function addVideoStream({
   return videoEl;
 }
 
-async function addModelAnimation({ socketId, animation, parentEl }) {
-  const { key: modelKey, val: modelUrl } = animation.state;
+function addIframeEl({ uri, socketId, parentEl }) {
+  let iframeEl = parentEl.find('iframe')[0];
 
-  let canvasEl = parentEl.find('canvas');
-  if (!canvasEl.length) {
-    canvasEl = $('<canvas class="user-avatar d-flex align-items-center justify-content-center"></canvas>');
-    await parentEl.prepend(canvasEl)
+  if (!parentEl.find('iframe').length) {
+    iframeEl = document.createElement('iframe')
+    parentEl.prepend(iframeEl)
   }
 
-  if (socketId === socket.id) parentEl.removeClass('hide-important');
-  if (!modelUrl) return canvasEl.fadeOut();
-  if (animation.model && canvasEl.attr('model') === modelKey) {
-    return animation.model.position.set(canvasEl.width() * 0.5, canvasEl.height() * 0.8);
-  }
+  iframeEl.setAttribute('src', uri);
+  iframeEl.setAttribute('class', 'user-avatar')
+  iframeEl.setAttribute('socketId', socketId)
 
-  canvasEl.attr('model', modelKey);
+  return iframeEl
+}
 
-  const pixiApp = new Application({
-    view: canvasEl[0],
-    autoStart: true,
-    transparent: true,
-    backgroundAlpha: 0,
-    resizeTo: parentEl[0]
-  });
-  parentEl[0].prepend(pixiApp.view)
+async function addModelAnimation({ socketId, model, parentEl }) {
+  otherModels[socketId] = model;
 
-  const container = new PIXI.Container();
-
-  pixiApp.stage.addChild(container);
-
-  // Load live2d model
-  // const currentModel = new Live2DModel({ autoInteract: false })
-  // await Live2DFactory.setupLive2DModel(currentModel, modelUrl, { autoInteract: false })
-  const currentModel = await Live2DModel.from(modelUrl, { autoInteract: false, tag: randomColor() });
-  currentModel.scale.set(0.4);
-  currentModel.interactive = true;
-  currentModel.anchor.set(0.5, 0.5);
-  currentModel.position.set(parentEl.width() * 0.5, parentEl.height() * 0.8);
-
-  // Add events to drag model
-  currentModel.on('pointerdown', e => {
-    currentModel.offsetX = e.data.global.x - currentModel.position.x;
-    currentModel.offsetY = e.data.global.y - currentModel.position.y;
-    currentModel.dragging = true;
-  });
-  currentModel.on('pointerup', e => {
-    currentModel.dragging = false;
-  });
-  currentModel.on('pointermove', e => {
-    if (currentModel.dragging) {
-      currentModel.position.set(
-        e.data.global.x - currentModel.offsetX,
-        e.data.global.y - currentModel.offsetY
-      );
-    }
-  });
-
-  // Add mousewheel events to scale model
-  canvasEl[0].addEventListener('wheel', e => {
-    e.preventDefault();
-    currentModel.scale.set(
-      clamp(currentModel.scale.x + e.deltaY * -0.001, -0.5, 10)
-    );
-  });
-
-  // Add live2d model to stage
-  container.addChild(currentModel);
-  animation.model = currentModel;
+  parentEl.find('video').remove();
+  addIframeEl({ uri: `/live2d-renderer/${model.key}`, socketId, parentEl });
 
   if (socketId === socket.id) {
+    parentEl.removeClass('hide-important');
     facemesh = new FaceMesh({
       locateFile: file => `/modules/@mediapipe/face_mesh/${file}`
     });
@@ -477,7 +404,7 @@ async function addModelAnimation({ socketId, animation, parentEl }) {
         if (isHidden) myCanvasPreview.removeClass('hide-important');
         if (useFacemesh) drawFacemesh({ points, parentEl: el.cntPreview });
 
-        animateLive2DModel({ points, model: animation.model, parentEl });
+        publishAnimation({ socketId, points, parentEl });
 
         return socket.emit('FRAME_ANIMATION', {
           roomId: state.roomId,
@@ -528,147 +455,13 @@ function drawFacemesh({ points, parentEl }) {
   }
 }
 
-function animateLive2DModel({ points, model, parentEl }) {
-  if (!model || !points) return;
+function publishAnimation({ socketId, points, parentEl }) {
+  if (!points) return;
 
-  let riggedFace;
-
-  if (points) {
-    // use kalidokit face solver
-    riggedFace = Face.solve(points, {
-      runtime: 'mediapipe',
-      video: parentEl.find('video')[0]
-    });
-    rigFace({
-      model,
-      result: riggedFace,
-      lerpAmount: 0.5
-    });
-  }
-}
-
-// Update live2d model internal state
-function rigFace({ result, model, lerpAmount = 0.7 }) {
-  if (!model || !result) return;
-  const updateFn = model.internalModel.motionManager.update;
-  const { coreModel } = model.internalModel;
-
-  model.internalModel.motionManager.update = (...args) => {
-    // disable default blink animation
-    model.internalModel.eyeBlink = undefined;
-
-    coreModel.setParameterValueById(
-      'ParamEyeBallX',
-      lerp(
-        result.pupil.x,
-        coreModel.getParameterValueById('ParamEyeBallX'),
-        lerpAmount
-      )
-    );
-    coreModel.setParameterValueById(
-      'ParamEyeBallY',
-      lerp(
-        result.pupil.y,
-        coreModel.getParameterValueById('ParamEyeBallY'),
-        lerpAmount
-      )
-    );
-
-    // X and Y axis rotations are swapped for Live2D parameters
-    // because it is a 2D system and KalidoKit is a 3D system
-    coreModel.setParameterValueById(
-      'ParamAngleX',
-      lerp(
-        result.head.degrees.y,
-        coreModel.getParameterValueById('ParamAngleX'),
-        lerpAmount
-      )
-    );
-    coreModel.setParameterValueById(
-      'ParamAngleY',
-      lerp(
-        result.head.degrees.x,
-        coreModel.getParameterValueById('ParamAngleY'),
-        lerpAmount
-      )
-    );
-    coreModel.setParameterValueById(
-      'ParamAngleZ',
-      lerp(
-        result.head.degrees.z,
-        coreModel.getParameterValueById('ParamAngleZ'),
-        lerpAmount
-      )
-    );
-
-    // update body params for models without head/body param sync
-    const dampener = 0.3;
-    coreModel.setParameterValueById(
-      'ParamBodyAngleX',
-      lerp(
-        result.head.degrees.y * dampener,
-        coreModel.getParameterValueById('ParamBodyAngleX'),
-        lerpAmount
-      )
-    );
-    coreModel.setParameterValueById(
-      'ParamBodyAngleY',
-      lerp(
-        result.head.degrees.x * dampener,
-        coreModel.getParameterValueById('ParamBodyAngleY'),
-        lerpAmount
-      )
-    );
-    coreModel.setParameterValueById(
-      'ParamBodyAngleZ',
-      lerp(
-        result.head.degrees.z * dampener,
-        coreModel.getParameterValueById('ParamBodyAngleZ'),
-        lerpAmount
-      )
-    );
-
-    // Simple example without winking.
-    // Interpolate based on old blendshape, then stabilize blink with `Kalidokit` helper function.
-    const stabilizedEyes = Kalidokit.Face.stabilizeBlink(
-      {
-        l: lerp(
-          result.eye.l,
-          coreModel.getParameterValueById('ParamEyeLOpen'),
-          0.7
-        ),
-        r: lerp(
-          result.eye.r,
-          coreModel.getParameterValueById('ParamEyeROpen'),
-          0.7
-        )
-      },
-      result.head.y
-    );
-    // eye blink
-    coreModel.setParameterValueById('ParamEyeLOpen', stabilizedEyes.l);
-    coreModel.setParameterValueById('ParamEyeROpen', stabilizedEyes.r);
-
-    // mouth
-    coreModel.setParameterValueById(
-      'ParamMouthOpenY',
-      lerp(
-        result.mouth.y,
-        coreModel.getParameterValueById('ParamMouthOpenY'),
-        0.3
-      )
-    );
-    // Adding 0.3 to ParamMouthForm to make default more of a "smile"
-    coreModel.setParameterValueById(
-      'ParamMouthForm',
-      0.3
-      + lerp(
-        result.mouth.x,
-        coreModel.getParameterValueById('ParamMouthForm'),
-        0.3
-      )
-    );
-  };
+  const iframe = parentEl.find('iframe')[0]
+  const { contentWindow } = iframe
+  console.debug(`Publish animation for socketId=${socketId} totalPoints=${points.length} sample=${JSON.stringify(points[0])}`)
+  return contentWindow.postMessage({ socketId, points, timestamp: new Date().getTime() })
 }
 
 async function spawnPeerjs() {
@@ -728,7 +521,7 @@ async function spawnPeerjs() {
       const [otherSocketId] = other.split(':')
 
       const otherAccount = state.room.accounts[other]
-      const otherContainerEl = addParticipantContainer({
+      const otherContainerEl = addParticipantEl({
         socketId: otherSocketId,
         userName: otherAccount.userName,
         parentEl: el.cntStream
@@ -786,7 +579,8 @@ $(async () => {
     // update room info
     state.room = room;
 
-    localStream = await askLocalStream(el.cntPreview.find('video')[0]);
+    const videoEl = addVideoEl({ parentEl: el.cntPreview })
+    localStream = await askLocalStream(videoEl);
     addVideoStream({
       socketId: socket.id,
       userId: state.userId,
@@ -879,34 +673,33 @@ $(async () => {
     })
 
     const parentEl = el.cntStream.find(`[socketId="${socketId}"] .resizer-inner`);
-    if (!data) {
-      parentEl.find('video').fadeIn();
-      parentEl.find('canvas').fadeOut();
-      return null;
+    if (data) {
+      if (data.val) {
+        return addModelAnimation({
+          socketId,
+          model: data,
+          parentEl
+        })
+      }
     }
 
-    otherAnimations[socketId] = otherAnimations[socketId] || {}
-    otherAnimations[socketId].state = data;
-    addModelAnimation({
+    addVideoStream({
       socketId,
-      animation: otherAnimations[socketId],
+      userId,
+      stream: otherStreams[socketId],
       parentEl
     })
-    parentEl.find('video').fadeOut();
-    parentEl.find('canvas').fadeIn();
   });
 
   socket.on('USER_FRAME_ANIMATION', ({
     roomId, peerId, socketId, userId, userName, data
   }) => {
     console.debug('socket::USER_FRAME_ANIMATION', {
-      roomId, peerId, userId, userName, data: '...'
+      roomId, peerId, userId, userName, data: data.length
     })
 
-    const { model } = otherAnimations[socketId];
     const parentEl = el.cntStream.find(`[socketId="${socketId}"] .resizer-inner`);
-
-    animateLive2DModel({ points: data, model, parentEl });
+    publishAnimation({ socketId, points: data, parentEl });
   });
 
   socket.on('disconnect', (message) => {

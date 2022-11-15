@@ -99,7 +99,7 @@
     <div id="stream-container" class="resizer row d-flex align-items-center justify-content-center">
       <div id="self-content" class="resizer-outer d-flex flex-column col">
         <div class="resizer-inner">
-          <!-- <canvas class="user-avatar d-flex align-items-center justify-content-center"></canvas> -->
+          <!-- <iframe class="user-avatar d-flex align-items-center justify-content-center"></iframe> -->
           <div class="user-info user-info-badge">
             <span>You</span>
           </div>
@@ -109,7 +109,7 @@
       <!-- <div class="resizer-outer d-flex flex-column col">
         <div class="resizer-inner">
           <video class="user-video" src="/assets/videos/example.mov"></video>
-          <canvas class="user-avatar d-flex align-items-center justify-content-center"></canvas>
+          <iframe class="user-avatar d-flex align-items-center justify-content-center"></iframe>
           <div class="user-info user-info-badge">
             <span>First Participant</span>
           </div>
@@ -117,7 +117,7 @@
       </div>
     </div> -->
     <div id="preview-container" class="self-preview">
-      <video class="user-video"></video>
+      <!-- <video class="user-video"></video> -->
       <canvas class="user-avatar d-flex align-items-center justify-content-center"></canvas>
       <div class="user-info">
         <span>You</span>
@@ -156,19 +156,10 @@
   <script src="/modules/socket.io-client/dist/socket.io.min.js"></script>
   <!-- Bluebird -->
   <script src="/modules/bluebird/js/browser/bluebird.min.js"></script>
-  <!-- Live2D SDK  -->
-  <script src="/libs/live2dcubismcore.min.js"></script>
-  <script src="/libs/webgl-live2d.min.js"></script>
-  <!-- PixiJS Renderer -->
-  <script src="/modules/pixi.js/dist/pixi.min.js"></script>
-  <!-- PixiJS Live2D Plugin -->
-  <script src="/modules/pixi-live2d-display/dist/index.min.js"></script>
   <!-- Mediapipe or Tensorflow.js -->
   <script src="/modules/@mediapipe/face_mesh/face_mesh.js"></script>
   <script src="/modules/@mediapipe/drawing_utils/drawing_utils.js"></script>
   <script src="/libs/mediapipe.camera_utils.js"></script>
-  <!-- Kalidokit Kinematic Solver -->
-  <script src="/modules/kalidokit/dist/kalidokit.umd.js"></script>
   <script type="module">
     import { faker as _faker } from '/modules/@faker-js/faker/dist/esm/index.mjs';
     window.faker = window.NODE_ENV === 'production' ? undefined : _faker;
