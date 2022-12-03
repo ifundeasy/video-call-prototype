@@ -12,7 +12,8 @@
 * Multi room instance
 * Chat
 * Video conference
-* Face motion detector (soon)
+* Face motion detector
+* Separate html element between video and audio (soon)
 
 ## Run on local
 
