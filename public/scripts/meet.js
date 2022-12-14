@@ -1,5 +1,6 @@
 /* eslint-disable no-undef, consistent-return, no-alert, no-use-before-define */
 
+window.JWT_TOKEN = 'THIS_IS_JWT_TOKEN_FORMAT';
 window.el = {
   slcModel: $('#slc-model'),
   mdlChat: $('#mdl-chat'),
@@ -482,7 +483,8 @@ async function spawnPeerjs() {
     host: svcURL.hostname,
     port: svcURL.port,
     // secure: nodeEnv === 'production',
-    debug: nodeEnv === 'production' ? 3 : 2
+    debug: nodeEnv === 'production' ? 3 : 2,
+    token: JWT_TOKEN
   })
 
   // * available peer methods
@@ -568,7 +570,10 @@ $(async () => {
 
   socket = io({
     path: '/io',
-    host: state.svcURL.origin
+    host: state.svcURL.origin,
+    query: {
+      token: JWT_TOKEN
+    }
   });
 
   socket.on('connect', spawnPeerjs)

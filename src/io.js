@@ -14,6 +14,16 @@ const io = new socketIO.Server({
   }
 });
 
+io.use((socket, next) => {
+  if (socket.handshake.query && socket.handshake.query.token) {
+    if (socket.handshake.query.token !== 'THIS_IS_JWT_TOKEN_FORMAT') {
+      return next(new Error('Authentication error'));
+    }
+    return next();
+  }
+  return next(new Error('Authentication error'));
+})
+
 io.on('connection', (socket) => {
   console.info('io::connection', socket.id)
 

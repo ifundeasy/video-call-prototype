@@ -13,8 +13,12 @@ const attach = (server, app) => {
 
   app.use('/rtc', peer)
 
-  peer.on('connection', (socket) => {
-    console.info('peer::connection', socket.id);
+  peer.on('connection', (client) => {
+    console.info('peer::connection', client.token);
+    console.info('peer::connection', client.id);
+    if (client.token !== 'THIS_IS_JWT_TOKEN_FORMAT') {
+      client.socket.close()
+    }
   });
 
   peer.on('disconnect', (socket) => {
